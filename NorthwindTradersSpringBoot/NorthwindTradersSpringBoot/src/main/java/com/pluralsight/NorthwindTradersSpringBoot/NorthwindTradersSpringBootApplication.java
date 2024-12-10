@@ -42,22 +42,50 @@ public class NorthwindTradersSpringBootApplication implements CommandLineRunner 
 			switch (choice) {
 				case 1:
 
-					System.out.println("Products in the system:");
-					for (Product product : productDAO.getAll()) {
-						System.out.println("ID: "+product.getProductID()+ " Name: " + product.getName() +", Category: "+product.getCategory()+ ", Price: $" + product.getPrice());
+					System.out.println("\nProducts in the system:");
+					System.out.printf("%-10s %-20s %-15s %-10s\n", "ID", "Name", "Category", "Price");
+					System.out.println("------------------------------------------------------------");
+
+
+					if (productDAO.getAll().isEmpty()) {
+						System.out.println("No products available.");
+					} else {
+						for (Product product : productDAO.getAll()) {
+							System.out.printf("%-10d %-20s %-15s $%-10.2f\n",
+									product.getProductID(),
+									product.getName(),
+									product.getCategory(),
+									product.getPrice());
+						}
 					}
 					break;
 
 				case 2:
 					System.out.print("Enter product ID: ");
 					int productID = scanner.nextInt();
+					scanner.nextLine();
+
 					System.out.print("Enter product name: ");
 					String name = scanner.nextLine();
+
 					System.out.print("Enter product category: ");
 					String category = scanner.nextLine();
+
 					System.out.print("Enter product price: ");
-					double price = scanner.nextDouble();
-					scanner.nextLine();
+					double price = 0.0;
+					boolean validPrice = false;
+
+
+					while (!validPrice) {
+						if (scanner.hasNextDouble()) {
+							price = scanner.nextDouble();
+							scanner.nextLine();
+							validPrice = true;
+						} else {
+							System.out.print("Invalid input. Please enter a valid product price: ");
+							scanner.nextLine();
+						}
+					}
 
 
 					Product newProduct = new Product(productID,name,category, price);
